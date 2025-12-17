@@ -1,0 +1,5 @@
+{
+  "name": "Zerve AI Model Dashboard",
+  "description": "A high-performance dashboard visualizing the results of the Health Insurance Claim Prediction model, featuring Gini coefficient comparisons and pipeline insights.",
+  "requestFramePermissions": []
+}
