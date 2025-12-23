@@ -51,7 +51,6 @@
             font-family: 'Plus Jakarta Sans', sans-serif;
         }
 
-        /* CRT Scanline Effect */
         .scanlines {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -82,7 +81,6 @@
             clip-path: polygon(0 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%);
         }
 
-        /* Tactical Corner Accents */
         .hud-card::before, .hud-card::after {
             content: '';
             position: absolute;
@@ -101,26 +99,6 @@
             border-left: 3px solid #00f2ff;
             text-shadow: 0 0 10px rgba(0, 242, 255, 0.5);
         }
-
-        @keyframes glitch {
-            0% { transform: translate(0); }
-            20% { transform: translate(-2px, 2px); }
-            40% { transform: translate(-2px, -2px); }
-            60% { transform: translate(2px, 2px); }
-            80% { transform: translate(2px, -2px); }
-            100% { transform: translate(0); }
-        }
-        .glitch-text:hover { animation: glitch 0.2s infinite linear; color: #00f2ff; }
-
-        .pipeline-flow {
-            position: absolute;
-            width: 2px;
-            height: 100%;
-            background: linear-gradient(to bottom, transparent, #00f2ff, transparent);
-            top: 0; left: 50%;
-            animation: flowDown 2s infinite linear;
-        }
-        @keyframes flowDown { 0% { transform: translateY(-100%); } 100% { transform: translateY(100%); } }
 
         .custom-scrollbar::-webkit-scrollbar { width: 4px; }
         .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
@@ -147,6 +125,34 @@
             color: #000;
             box-shadow: 0 0 20px rgba(0, 242, 255, 0.6);
         }
+
+        .phase-badge {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 10px;
+            padding: 2px 8px;
+            border-radius: 2px;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            display: inline-block;
+        }
+
+        .code-block {
+            background: rgba(2, 8, 18, 0.95);
+            padding: 2rem;
+            border-radius: 4px;
+            border: 1px solid rgba(0, 242, 255, 0.1);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+            line-height: 1.6;
+            color: #9cdcfe;
+            overflow-x: auto;
+            white-space: pre-wrap;
+        }
+
+        .keyword { color: #569cd6; }
+        .comment { color: #6a9955; }
+        .string { color: #ce9178; }
+        .number { color: #b5cea8; }
     </style>
 <script type="importmap">
 {
@@ -166,16 +172,16 @@
             <div class="flex flex-col gap-1 mb-6">
                 <span class="font-display text-2xl font-bold tracking-tighter text-white">ZERVE<span class="text-cyan-400"> AI</span></span>
                 <div class="h-0.5 w-full bg-gradient-to-r from-cyan-500 to-transparent"></div>
-                <span class="text-[9px] font-mono text-cyan-500/70 tracking-[0.2em] uppercase">Team Hackovators // v2.0.4</span>
+                <span class="text-[9px] font-mono text-cyan-500/70 tracking-[0.2em] uppercase">Team Hackovators // v3.0.0</span>
             </div>
             
             <div class="space-y-4 py-4 border-y border-cyan-900/30">
                 <div class="flex items-center justify-between text-[10px] font-mono">
                     <span class="text-slate-500">SYSTEM_STABILITY</span>
-                    <span class="text-green-500">99.8%</span>
+                    <span class="text-green-500">100%</span>
                 </div>
                 <div class="w-full bg-slate-900 h-1 rounded-full overflow-hidden">
-                    <div class="bg-cyan-500 h-full w-[99.8%] animate-pulse"></div>
+                    <div class="bg-cyan-500 h-full w-full animate-pulse"></div>
                 </div>
             </div>
         </div>
@@ -185,26 +191,27 @@
                 <i data-lucide="layout-grid" class="w-4 h-4"></i>
                 <span>Summary</span>
             </button>
+            <button onclick="switchTab('history')" id="btn-history" class="nav-btn w-full flex items-center gap-4 px-4 py-3 text-slate-400 hover:text-cyan-400 transition-all font-mono text-xs uppercase tracking-widest">
+                <i data-lucide="history" class="w-4 h-4"></i>
+                <span>History</span>
+            </button>
             <button onclick="switchTab('analysis')" id="btn-analysis" class="nav-btn w-full flex items-center gap-4 px-4 py-3 text-slate-400 hover:text-cyan-400 transition-all font-mono text-xs uppercase tracking-widest">
                 <i data-lucide="target" class="w-4 h-4"></i>
                 <span>Metrics</span>
             </button>
             <button onclick="switchTab('pipeline')" id="btn-pipeline" class="nav-btn w-full flex items-center gap-4 px-4 py-3 text-slate-400 hover:text-cyan-400 transition-all font-mono text-xs uppercase tracking-widest">
                 <i data-lucide="cpu" class="w-4 h-4"></i>
-                <span>Kernel</span>
+                <span>Pipeline</span>
             </button>
             <button onclick="switchTab('data')" id="btn-data" class="nav-btn w-full flex items-center gap-4 px-4 py-3 text-slate-400 hover:text-cyan-400 transition-all font-mono text-xs uppercase tracking-widest">
                 <i data-lucide="file-code" class="w-4 h-4"></i>
                 <span>Artifacts</span>
             </button>
+            <button onclick="switchTab('experience')" id="btn-experience" class="nav-btn w-full flex items-center gap-4 px-4 py-3 text-slate-400 hover:text-cyan-400 transition-all font-mono text-xs uppercase tracking-widest">
+                <i data-lucide="award" class="w-4 h-4"></i>
+                <span>Experience</span>
+            </button>
         </nav>
-
-        <div class="absolute bottom-6 left-6 right-6">
-            <div class="p-3 bg-cyan-950/20 border border-cyan-900/30 rounded flex items-center gap-3">
-                <div class="w-2 h-2 rounded-full bg-cyan-500 animate-pulse"></div>
-                <div class="text-[9px] font-mono text-cyan-400 uppercase tracking-tighter">Secure Link Established</div>
-            </div>
-        </div>
     </aside>
 
     <main class="ml-64 p-10 relative z-10">
@@ -215,16 +222,16 @@
                     <div class="absolute -right-10 top-0 opacity-10">
                         <i data-lucide="zap" class="w-64 h-64 text-cyan-400"></i>
                     </div>
-                    <span class="text-xs font-mono text-cyan-400 mb-4 uppercase tracking-[0.4em]">Optimized Neural Result</span>
-                    <h1 class="text-6xl font-display font-bold text-white mb-8 tracking-tighter">HistGradient<br/><span class="text-cyan-400 text-shadow-cyan">Boosting</span></h1>
+                    <span class="text-xs font-mono text-cyan-400 mb-4 uppercase tracking-[0.4em]">Final Optimized Selection</span>
+                    <h1 class="text-6xl font-display font-bold text-white mb-8 tracking-tighter">CatBoost<br/><span class="text-cyan-400 text-shadow-cyan">Ranked</span></h1>
                     
                     <div class="grid grid-cols-2 gap-10">
                         <div>
-                            <div class="text-7xl font-mono font-bold text-cyan-400" id="gini-score">0.2725</div>
+                            <div class="text-7xl font-mono font-bold text-cyan-400" id="gini-score">0.2815</div>
                             <div class="text-[10px] font-mono text-slate-500 uppercase tracking-[0.2em] mt-2">Normalized Gini Score</div>
                         </div>
                         <div>
-                            <div class="text-7xl font-mono font-bold text-white">0.9636</div>
+                            <div class="text-7xl font-mono font-bold text-white">0.9640</div>
                             <div class="text-[10px] font-mono text-slate-500 uppercase tracking-[0.2em] mt-2">Accuracy Matrix</div>
                         </div>
                     </div>
@@ -232,33 +239,33 @@
 
                 <div class="hud-card p-8 flex flex-col justify-between">
                     <div>
-                        <h3 class="text-white text-xs font-bold font-mono uppercase tracking-widest mb-8 border-b border-cyan-900/30 pb-2">Dataset Statistics</h3>
+                        <h3 class="text-white text-xs font-bold font-mono uppercase tracking-widest mb-8 border-b border-cyan-900/30 pb-2">Optimal Run Stats</h3>
                         <div class="space-y-6">
                             <div class="flex justify-between items-end">
-                                <span class="text-[10px] font-mono text-slate-500 uppercase">Input Shape</span>
-                                <span class="text-sm font-mono text-white">476,169 × 50</span>
+                                <span class="text-[10px] font-mono text-slate-500 uppercase">Val Strategy</span>
+                                <span class="text-[10px] font-mono text-white">Stratified 80/20</span>
                             </div>
                             <div class="flex justify-between items-end">
-                                <span class="text-[10px] font-mono text-slate-500 uppercase">Target Entropy</span>
-                                <span class="text-sm font-mono text-white">0.1422</span>
+                                <span class="text-[10px] font-mono text-slate-500 uppercase">Best Iteration</span>
+                                <span class="text-sm font-mono text-white">1529</span>
                             </div>
                             <div class="flex justify-between items-end">
-                                <span class="text-[10px] font-mono text-slate-500 uppercase">Missing Nodes</span>
-                                <span class="text-sm font-mono text-amber-500">22.4% Avg</span>
+                                <span class="text-[10px] font-mono text-slate-500 uppercase">Validation AUC</span>
+                                <span class="text-sm font-mono text-cyan-400 font-bold">0.6408</span>
                             </div>
                         </div>
                     </div>
                     <div class="mt-8">
                         <div class="flex items-center gap-2 mb-2">
                             <div class="w-1 h-1 bg-cyan-400"></div>
-                            <span class="text-[8px] font-mono text-cyan-400 uppercase">Validation Stream</span>
+                            <span class="text-[8px] font-mono text-cyan-400 uppercase">Stable Convergence</span>
                         </div>
                         <div class="h-12 flex items-end gap-1">
-                            <div class="w-full bg-cyan-950 h-[30%] animate-pulse"></div>
-                            <div class="w-full bg-cyan-950 h-[60%] delay-75 animate-pulse"></div>
-                            <div class="w-full bg-cyan-950 h-[45%] delay-150 animate-pulse"></div>
-                            <div class="w-full bg-cyan-950 h-[80%] delay-200 animate-pulse"></div>
-                            <div class="w-full bg-cyan-950 h-[35%] delay-300 animate-pulse"></div>
+                            <div class="w-full bg-cyan-950 h-[80%] animate-pulse"></div>
+                            <div class="w-full bg-cyan-950 h-[85%] delay-75 animate-pulse"></div>
+                            <div class="w-full bg-cyan-950 h-[82%] delay-150 animate-pulse"></div>
+                            <div class="w-full bg-cyan-950 h-[88%] delay-200 animate-pulse"></div>
+                            <div class="w-full bg-cyan-950 h-[90%] delay-300 animate-pulse"></div>
                         </div>
                     </div>
                 </div>
@@ -268,42 +275,126 @@
                 <div class="hud-card p-8">
                     <h3 class="text-white font-mono text-xs uppercase tracking-widest mb-6 flex items-center gap-2">
                         <i data-lucide="command" class="w-4 h-4 text-cyan-400"></i>
-                        Execution Kernel Log
+                        Kernel Registry
                     </h3>
-                    <div class="bg-black/40 p-6 rounded border border-cyan-900/30 font-mono text-[10px] leading-relaxed h-[200px] overflow-y-auto custom-scrollbar">
-                        <div class="text-slate-600">[0.0000] Initializing Zerve.AI Kernel Environment...</div>
-                        <div class="text-slate-600">[0.0122] Threading established: 16 Cores detected.</div>
-                        <div class="text-cyan-500">[0.4552] Loading Dataset (N=476,169, D=50)</div>
-                        <div class="text-slate-500">[1.2001] Baseline Evaluation: LogisticRegression -> Gini 0.2370</div>
-                        <div class="text-slate-500">[2.5661] Baseline Evaluation: RandomForest -> Gini 0.2213</div>
-                        <div class="text-cyan-400">[8.4212] Training Optimizer: HistGradientBoosting (m_iter=300)</div>
-                        <div class="text-cyan-400">[24.122] Validation Accuracy: 96.36%</div>
-                        <div class="text-green-400">[24.500] Final Gini: 0.2725 (Optimal reached)</div>
-                        <div class="text-slate-600 mt-2 cursor-wait animate-pulse">_ Waiting for user input...</div>
+                    <div class="bg-black/40 p-6 rounded border border-cyan-900/30 font-mono text-[10px] h-[200px] overflow-y-auto custom-scrollbar">
+                        <div class="text-slate-600">[0.00] Sys Boot: Zerve.AI Environment Ready</div>
+                        <div class="text-cyan-500">[1.45] Processing CatBoost Rank-Based Pipeline</div>
+                        <div class="text-slate-500">[5.22] Ordered Boosting Layers Initialized</div>
+                        <div class="text-slate-500">[12.4] Early Stopping engaged: 300 rounds window</div>
+                        <div class="text-green-400">[28.5] Validation Gini: 0.2815 Verified</div>
+                        <div class="text-cyan-400">[29.1] Probabilities converted to Percentile Ranks</div>
+                        <div class="text-slate-600 cursor-wait animate-pulse mt-2">_ Input required for deployment...</div>
                     </div>
                 </div>
 
                 <div class="hud-card p-8">
                     <h3 class="text-white font-mono text-xs uppercase tracking-widest mb-6 flex items-center gap-2">
                         <i data-lucide="shield-check" class="w-4 h-4 text-green-400"></i>
-                        Submission Registry
+                        Submission Log
                     </h3>
                     <div class="space-y-4">
-                        <div class="flex items-center gap-4 p-4 bg-cyan-950/10 border border-cyan-900/20 rounded group hover:border-cyan-400/50 transition-all cursor-pointer">
-                            <div class="w-10 h-10 rounded bg-cyan-900/30 flex items-center justify-center text-cyan-400 group-hover:scale-110 transition-transform">
+                        <div class="flex items-center gap-4 p-4 bg-cyan-950/10 border border-cyan-900/20 rounded group hover:border-cyan-400 transition-all cursor-pointer">
+                            <div class="w-10 h-10 rounded bg-cyan-900/30 flex items-center justify-center text-cyan-400">
                                 <i data-lucide="file-check" class="w-5 h-5"></i>
                             </div>
                             <div class="flex-1">
-                                <div class="text-xs text-white font-mono">submission_final_v2.csv</div>
-                                <div class="text-[8px] text-slate-500 font-mono uppercase mt-1">119,043 Test Predictions Written</div>
+                                <div class="text-xs text-white font-mono">submission_final_v3_ranked.csv</div>
+                                <div class="text-[8px] text-slate-500 font-mono mt-1">Gini Optimization Verified</div>
                             </div>
-                            <button class="text-[10px] font-mono text-cyan-400 hover:text-white uppercase px-3 py-1 border border-cyan-400/30 hover:bg-cyan-400/20 rounded">Pull</button>
                         </div>
-                        <div class="p-4 bg-amber-950/10 border border-amber-900/20 rounded flex items-start gap-4">
-                            <i data-lucide="alert-circle" class="w-5 h-5 text-amber-500 shrink-0"></i>
-                            <p class="text-[9px] font-mono text-amber-500/80 leading-relaxed uppercase tracking-tighter">
-                                Warning: Feature_38 contains > 70% null indices. Imputation via Median Strategy successful but may impact local precision in sparse clusters.
+                        <div class="p-4 bg-green-950/5 border border-green-900/20 rounded flex items-start gap-4">
+                            <i data-lucide="info" class="w-5 h-5 text-green-500 shrink-0"></i>
+                            <p class="text-[9px] font-mono text-green-400/80 uppercase">
+                                Final Choice: Phase 3 Strategy selected over manual ensembles for superior ranking stability and monotonic ordering.
                             </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- View: History -->
+        <div id="view-history" class="view-section">
+            <h2 class="font-display text-4xl font-bold text-white uppercase tracking-tight mb-8">The Development Story</h2>
+            
+            <div class="space-y-12">
+                <!-- Phase 1 -->
+                <div class="hud-card p-8 border-cyan-900/50">
+                    <div class="flex flex-col lg:flex-row gap-8">
+                        <div class="lg:w-1/3 flex flex-col">
+                            <div class="flex items-center gap-4 mb-4">
+                                <span class="phase-badge bg-cyan-900/30 text-cyan-400 border border-cyan-500/30">Phase 1</span>
+                                <h3 class="text-white font-display text-xl uppercase leading-tight">Baseline Exploration</h3>
+                            </div>
+                            <p class="text-xs text-slate-400 font-mono uppercase leading-relaxed mb-6">
+                                OUR JOURNEY STARTED WITH A MONSTER DATASET: 476,000 ROWS WITH A SEVERE 3.6% CLASS IMBALANCE. AT FIRST, WE FOCUSED ON JUST GETTING THE SIGNAL STRENGTH RIGHT. WE USED TRADITIONAL MEDIAN IMPUTATION AND ONE-HOT ENCODING, RUNNING EVERY BASELINE MODEL WE KNEW. WE SAW HIGH ACCURACY (>0.96), BUT WE KNEW IT WAS A LIE—THE GINI SCORE WAS WHAT REALLY MATTERED. BASELINES LIKE LOGISTIC REGRESSION AND RANDOM FOREST HELPED US UNDERSTAND THAT ACCURACY WAS UNRELIABLE FOR THIS PROBLEM.
+                            </p>
+                            <div class="grid grid-cols-2 gap-4 bg-black/40 border border-cyan-900/20 rounded p-4">
+                                <div>
+                                    <div class="tech-label">HistGB Gini</div>
+                                    <div class="tech-value text-cyan-400">0.2725</div>
+                                </div>
+                                <div>
+                                    <div class="tech-label">LogReg Gini</div>
+                                    <div class="tech-value">0.2370</div>
+                                </div>
+                                <div>
+                                    <div class="tech-label">Accuracy</div>
+                                    <div class="tech-value">0.9636</div>
+                                </div>
+                                <div>
+                                    <div class="tech-label">Target Entropy</div>
+                                    <div class="tech-value">0.1422</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="lg:w-2/3">
+                            <div class="h-[320px] w-full p-4 bg-black/20 rounded border border-cyan-900/10">
+                                <canvas id="historyChartPhase1"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Phase 2 -->
+                <div class="hud-card p-8 border-purple-900/50 relative overflow-hidden">
+                    <div class="absolute top-0 right-0 p-4 opacity-10">
+                        <i data-lucide="unlock" class="w-32 h-32 text-purple-400"></i>
+                    </div>
+                    <div class="flex flex-col lg:flex-row gap-8">
+                        <div class="lg:w-1/3 flex flex-col">
+                            <div class="flex items-center gap-4 mb-4">
+                                <span class="phase-badge bg-purple-900/30 text-purple-400 border border-purple-500/30">Phase 2</span>
+                                <h3 class="text-white font-display text-xl uppercase leading-tight">The Breakthrough</h3>
+                            </div>
+                            <p class="text-xs text-purple-200/70 font-mono uppercase italic leading-relaxed mb-6">
+                                "WE DIDN'T KNOW WE HAD THE POWER..."<br/><br/>
+                                THIS WAS THE PIVOTAL MOMENT. INITIALLY, WE FELT CONSTRAINED BY THE DEFAULT LIBRARIES, BELIEVING WE WERE LOCKED INTO THE BASICS. BUT THEN, WE DISCOVERED THE ABILITY TO CONFIGURE A NEW ENVIRONMENT. IT WAS LIKE UNLOCKING A SUPERCAPPED KERNEL. WE IMMEDIATELY INSTALLED CATBOOST, XGBOOST, AND LIGHTGBM. SUDDENLY, OUR MODEL WAS CAPABLE OF COMPLEX ORDERED BOOSTING AND DEEP RANKING.
+                            </p>
+                            <div class="grid grid-cols-2 gap-4 bg-black/40 border border-purple-900/20 rounded p-4">
+                                <div>
+                                    <div class="tech-label">CatBoost Gini</div>
+                                    <div class="tech-value text-purple-400">0.2815</div>
+                                </div>
+                                <div>
+                                    <div class="tech-label">LightGBM Gini</div>
+                                    <div class="tech-value">0.2663</div>
+                                </div>
+                                <div>
+                                    <div class="tech-label">XGBoost Gini</div>
+                                    <div class="tech-value">0.2558</div>
+                                </div>
+                                <div>
+                                    <div class="tech-label">Blended Ensemble</div>
+                                    <div class="tech-value text-amber-500">0.2670</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="lg:w-2/3">
+                            <div class="h-[320px] w-full p-4 bg-black/20 rounded border border-purple-900/10">
+                                <canvas id="historyChartPhase2"></canvas>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -315,10 +406,7 @@
             <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
                 <div class="hud-card lg:col-span-3 p-10 h-[550px]">
                     <div class="flex justify-between items-center mb-8">
-                        <h3 class="font-display text-white text-sm tracking-widest uppercase">Benchmark Topology</h3>
-                        <div class="flex gap-2">
-                            <span class="px-2 py-1 bg-cyan-900/20 text-cyan-400 text-[8px] font-mono border border-cyan-900/50">LATEST_RUN</span>
-                        </div>
+                        <h3 class="font-display text-white text-sm tracking-widest uppercase">Benchmarking Finalists</h3>
                     </div>
                     <div class="relative w-full h-[400px]">
                         <canvas id="performanceChart"></canvas>
@@ -326,7 +414,7 @@
                 </div>
                 
                 <div class="hud-card p-8 flex flex-col">
-                    <h3 class="text-white text-[10px] font-mono uppercase tracking-[0.3em] mb-8">Gini Rankings</h3>
+                    <h3 class="text-white text-[10px] font-mono uppercase tracking-[0.3em] mb-8">Performance Leaderboard</h3>
                     <div id="ranking-list" class="space-y-6 flex-1 overflow-y-auto custom-scrollbar pr-2"></div>
                 </div>
             </div>
@@ -334,72 +422,210 @@
 
         <!-- View: Pipeline -->
         <div id="view-pipeline" class="view-section">
-            <div class="max-w-3xl mx-auto py-10">
-                <div class="flex flex-col items-center">
-                    <div class="hud-card w-full p-8 flex items-center gap-8 border-cyan-400/20">
-                        <div class="w-16 h-16 rounded bg-black flex items-center justify-center border border-cyan-900 shadow-[0_0_15px_rgba(0,242,255,0.1)]">
-                            <i data-lucide="database" class="text-cyan-400 w-8 h-8"></i>
-                        </div>
-                        <div class="flex-1">
-                            <h4 class="text-white font-display text-lg tracking-widest uppercase">Input Data Buffer</h4>
-                            <p class="text-[10px] font-mono text-slate-500 mt-1">476k Records / 50 Numeric Dimensions</p>
-                        </div>
-                        <div class="text-[8px] font-mono text-cyan-400 animate-pulse">STREAMING...</div>
-                    </div>
-
-                    <div class="h-12 w-px bg-cyan-900/50 relative overflow-hidden">
-                        <div class="pipeline-flow"></div>
-                    </div>
-
-                    <div class="hud-card w-full p-8 flex items-center gap-8 bg-purple-900/5 border-purple-500/20">
-                        <div class="w-16 h-16 rounded bg-black flex items-center justify-center border border-purple-900">
-                            <i data-lucide="layers" class="text-purple-400 w-8 h-8"></i>
-                        </div>
-                        <div class="flex-1">
-                            <div class="flex items-center gap-3">
-                                <h4 class="text-white font-display text-lg tracking-widest uppercase">Data Normalization</h4>
-                                <span class="px-2 py-0.5 rounded-full bg-purple-900/30 text-[8px] font-mono text-purple-400 border border-purple-500/20">Pipeline Preprocessor</span>
+            <div class="max-w-5xl mx-auto py-4">
+                <div class="hud-card p-0 overflow-hidden shadow-[0_0_50px_rgba(0,242,255,0.1)]">
+                    <div class="bg-cyan-950/20 p-4 border-b border-cyan-900/30 flex items-center justify-between">
+                        <div class="flex items-center gap-4">
+                            <div class="flex gap-1.5">
+                                <div class="w-2.5 h-2.5 rounded-full bg-red-500/40"></div>
+                                <div class="w-2.5 h-2.5 rounded-full bg-amber-500/40"></div>
+                                <div class="w-2.5 h-2.5 rounded-full bg-green-500/40"></div>
                             </div>
-                            <div class="grid grid-cols-2 gap-4 mt-4">
-                                <div class="p-3 bg-black/40 border border-purple-900/30 rounded">
-                                    <div class="text-[8px] font-mono text-slate-500 uppercase">Imputation</div>
-                                    <div class="text-xs font-mono text-white">Median Fill Strategy</div>
-                                </div>
-                                <div class="p-3 bg-black/40 border border-purple-900/30 rounded">
-                                    <div class="text-[8px] font-mono text-slate-500 uppercase">Scaling</div>
-                                    <div class="text-xs font-mono text-white">StandardScaler (μ=0, σ=1)</div>
-                                </div>
-                            </div>
+                            <span class="text-[10px] font-mono text-cyan-500 uppercase tracking-widest">pipeline_optimized_gini.py</span>
                         </div>
+                        <span class="text-[9px] font-mono text-slate-500">Python 3.10 // Gini-Optimized</span>
                     </div>
+                    <div class="p-8 h-[700px] overflow-y-auto custom-scrollbar bg-black/60">
+                        <pre class="code-block"># =====================================================
+# FINAL PIPELINE – GINI OPTIMIZED
+# CATBOOST + XGBOOST + HISTGB + LIGHTGBM
+# AUTO BEST MODEL SELECTION
+# =====================================================
 
-                    <div class="h-12 w-px bg-cyan-900/50 relative overflow-hidden">
-                        <div class="pipeline-flow"></div>
-                    </div>
+import pandas as pd
+import numpy as np
 
-                    <div class="hud-card w-full p-10 border-cyan-400 shadow-[0_0_30px_rgba(0,242,255,0.1)] group">
-                        <div class="flex items-center gap-8">
-                            <div class="w-20 h-20 rounded-lg bg-cyan-950/20 border border-cyan-400 flex items-center justify-center text-cyan-400 shadow-[0_0_20px_rgba(0,242,255,0.3)] group-hover:scale-105 transition-transform duration-500">
-                                <i data-lucide="cpu" class="w-12 h-12 animate-pulse"></i>
-                            </div>
-                            <div class="flex-1">
-                                <h3 class="text-cyan-400 font-display text-2xl tracking-tighter uppercase mb-4">HistGradientBoosting</h3>
-                                <div class="grid grid-cols-3 gap-6">
-                                    <div class="border-l border-cyan-900/50 pl-4">
-                                        <div class="text-[8px] font-mono text-slate-500 uppercase mb-1">Max Iterations</div>
-                                        <div class="text-lg font-mono text-white">300</div>
-                                    </div>
-                                    <div class="border-l border-cyan-900/50 pl-4">
-                                        <div class="text-[8px] font-mono text-slate-500 uppercase mb-1">Max Depth</div>
-                                        <div class="text-lg font-mono text-white">10</div>
-                                    </div>
-                                    <div class="border-l border-cyan-900/50 pl-4">
-                                        <div class="text-[8px] font-mono text-slate-500 uppercase mb-1">Learning Rate</div>
-                                        <div class="text-lg font-mono text-white">0.05</div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import roc_auc_score
+from sklearn.preprocessing import StandardScaler, OneHotEncoder
+from sklearn.impute import SimpleImputer
+from sklearn.compose import ColumnTransformer
+from sklearn.pipeline import Pipeline
+
+from catboost import CatBoostClassifier
+from xgboost import XGBClassifier
+from sklearn.ensemble import HistGradientBoostingClassifier
+import lightgbm as lgb
+
+# ---------------------------
+# 1. LOAD DATA
+# ---------------------------
+train_df = pd.read_csv("training_data.csv")
+test_df  = pd.read_csv("test_data.csv")
+
+TARGET = "target"
+ID_COL = "id"
+
+X = train_df.drop(columns=[TARGET, ID_COL])
+y = train_df[TARGET]
+X_test = test_df.drop(columns=[ID_COL])
+
+num_cols = X.select_dtypes(include=["int64","float64"]).columns
+cat_cols = X.select_dtypes(include=["object"]).columns
+
+# ---------------------------
+# 2. PREPROCESSING
+# ---------------------------
+preprocessor = ColumnTransformer([
+    ("num", Pipeline([
+        ("imputer", SimpleImputer(strategy="median")),
+        ("scaler", StandardScaler())
+    ]), num_cols),
+
+    ("cat", Pipeline([
+        ("imputer", SimpleImputer(strategy="most_frequent")),
+        ("onehot", OneHotEncoder(handle_unknown="ignore", sparse_output=False))
+    ]), cat_cols)
+])
+
+X_train, X_val, y_train, y_val = train_test_split(
+    X, y, test_size=0.2, stratify=y, random_state=42
+)
+
+X_train = preprocessor.fit_transform(X_train)
+X_val   = preprocessor.transform(X_val)
+X_test  = preprocessor.transform(X_test)
+
+# ---------------------------
+# 3. GINI FUNCTIONS
+# ---------------------------
+def gini(y_true, y_pred):
+    return 2 * roc_auc_score(y_true, y_pred) - 1
+
+def normalized_gini(y_true, y_pred):
+    return gini(y_true, y_pred) / gini(y_true, y_true)
+
+# ---------------------------
+# 4. MODELS
+# ---------------------------
+scale_pos_weight = (y_train == 0).sum() / (y_train == 1).sum()
+
+cat_model = CatBoostClassifier(
+    iterations=7000,
+    learning_rate=0.015,
+    depth=8,
+    l2_leaf_reg=8,
+    subsample=0.8,
+    colsample_bylevel=0.8,
+    bootstrap_type="Bernoulli",
+    loss_function="Logloss",
+    eval_metric="AUC",
+    grow_policy="Lossguide",
+    random_seed=42,
+    early_stopping_rounds=300,
+    verbose=200
+)
+
+xgb_model = XGBClassifier(
+    n_estimators=400,
+    learning_rate=0.04,
+    max_depth=6,
+    subsample=0.85,
+    colsample_bytree=0.85,
+    scale_pos_weight=scale_pos_weight,
+    eval_metric="auc",
+    random_state=42
+)
+
+hgb_model = HistGradientBoostingClassifier(
+    max_iter=1200,
+    learning_rate=0.04,
+    max_depth=8,
+    min_samples_leaf=30,
+    random_state=42
+)
+
+lgb_model = lgb.LGBMClassifier(
+    n_estimators=500,
+    learning_rate=0.04,
+    max_depth=7,
+    subsample=0.85,
+    colsample_bytree=0.85,
+    class_weight="balanced",
+    random_state=42
+)
+
+models = {
+    "CatBoost": cat_model,
+    "XGBoost": xgb_model,
+    "HistGB": hgb_model,
+    "LightGBM": lgb_model
+}
+
+# ---------------------------
+# 5. TRAIN + VALIDATION
+# ---------------------------
+gini_scores = {}
+val_preds = {}
+
+for name, model in models.items():
+    print(f"\nTraining {name} ...")
+
+    if name == "CatBoost":
+        model.fit(
+            X_train, y_train,
+            eval_set=(X_val, y_val),
+            use_best_model=True
+        )
+
+        val_pred = model.predict_proba(X_val)[:,1]
+        val_pred_ranked = pd.Series(val_pred).rank(pct=True).values
+
+        gini_scores[name] = normalized_gini(y_val, val_pred_ranked)
+        val_preds[name] = val_pred_ranked
+
+    else:
+        model.fit(X_train, y_train)
+        val_pred = model.predict_proba(X_val)[:,1]
+
+        gini_scores[name] = normalized_gini(y_val, val_pred)
+        val_preds[name] = val_pred
+
+    print(f"{name} Normalized Gini: {gini_scores[name]:.4f}")
+
+# ---------------------------
+# 6. BEST MODEL
+# ---------------------------
+best_model = max(gini_scores, key=gini_scores.get)
+best_gini = gini_scores[best_model]
+
+print("\nBEST MODEL:", best_model)
+print("BEST GINI :", round(best_gini, 4))
+
+# ---------------------------
+# 7. FINAL TEST PREDICTION
+# ---------------------------
+if best_model == "CatBoost":
+    test_pred = cat_model.predict_proba(X_test)[:,1]
+    test_pred = pd.Series(test_pred).rank(pct=True).values
+else:
+    test_pred = (
+        0.40 * pd.Series(cat_model.predict_proba(X_test)[:,1]).rank(pct=True).values +
+        0.30 * xgb_model.predict_proba(X_test)[:,1] +
+        0.15 * hgb_model.predict_proba(X_test)[:,1] +
+        0.15 * lgb_model.predict_proba(X_test)[:,1]
+    )
+
+# ---------------------------
+# 8. SUBMISSION
+# ---------------------------
+submission = pd.DataFrame({
+    "id": test_df[ID_COL],
+    "target": test_pred
+})
+
+submission.to_csv("submission_final.csv", index=False)
+print("submission_final.csv created")</pre>
                     </div>
                 </div>
             </div>
@@ -408,61 +634,30 @@
         <!-- View: Data -->
         <div id="view-data" class="view-section">
             <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
-                <!-- Export Controller Pane -->
                 <div class="lg:col-span-1 space-y-6">
                     <div class="hud-card p-8 text-center flex flex-col items-center">
-                        <div class="w-20 h-20 rounded-full bg-cyan-400/10 border border-cyan-400/20 flex items-center justify-center mb-6 relative">
-                            <i data-lucide="download-cloud" class="w-10 h-10 text-cyan-400 animate-bounce"></i>
-                            <div class="absolute -top-1 -right-1 w-4 h-4 bg-green-500 rounded-full border-2 border-black flex items-center justify-center">
-                                <i data-lucide="check" class="w-2 h-2 text-white"></i>
-                            </div>
+                        <div class="w-20 h-20 rounded-full bg-cyan-400/10 border border-cyan-400/20 flex items-center justify-center mb-6">
+                            <i data-lucide="download-cloud" class="w-10 h-10 text-cyan-400"></i>
                         </div>
-                        <h3 class="text-white font-display text-lg uppercase tracking-tighter mb-2">Export Core</h3>
-                        <p class="text-[9px] font-mono text-slate-500 uppercase mb-8">Ready for deployment</p>
-                        
-                        <button onclick="handleDownload()" id="download-btn" class="btn-cyber w-full py-4 text-xs font-bold transition-all flex items-center justify-center gap-2">
+                        <h3 class="text-white font-display text-lg uppercase tracking-tighter mb-8">Export Final Artifact</h3>
+                        <button onclick="handleDownload()" id="download-btn" class="btn-cyber w-full py-4 text-xs font-bold flex items-center justify-center gap-2">
                             <i data-lucide="download" class="w-4 h-4"></i>
-                            Download Artifact
+                            Get Model Output
                         </button>
-                        
-                        <div class="mt-6 w-full space-y-3">
-                            <div class="flex justify-between text-[8px] font-mono uppercase">
-                                <span class="text-slate-500">File Size</span>
-                                <span class="text-white">4.2 MB</span>
-                            </div>
-                            <div class="flex justify-between text-[8px] font-mono uppercase">
-                                <span class="text-slate-500">Records</span>
-                                <span class="text-white">119,043</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="hud-card p-6 bg-green-500/5 border-green-500/20">
-                        <div class="flex items-center gap-3 mb-3">
-                            <i data-lucide="shield-check" class="w-4 h-4 text-green-500"></i>
-                            <span class="text-[9px] font-mono text-green-500 uppercase tracking-widest">Integrity Pass</span>
-                        </div>
-                        <p class="text-[8px] font-mono text-slate-400 leading-relaxed">SHA-256 Checksum: f8a3...b2c9. Verification successful against original tensor mapping.</p>
                     </div>
                 </div>
-
-                <!-- Table Pane -->
                 <div class="lg:col-span-3">
                     <div class="hud-card p-0 overflow-hidden">
-                        <div class="p-6 border-b border-cyan-900/30 bg-cyan-950/10 flex justify-between items-center">
-                            <h3 class="text-white font-mono text-xs uppercase tracking-[0.4em]">Artifact Registry // Pred_Output.v2</h3>
-                            <div class="flex gap-4">
-                                <span class="text-[9px] font-mono text-slate-500">Format: UTF-8 CSV</span>
-                                <span class="text-[9px] font-mono text-slate-500">Hash: 0x8aF4...2E1</span>
-                            </div>
+                        <div class="p-6 border-b border-cyan-900/30 bg-cyan-950/10">
+                            <h3 class="text-white font-mono text-xs uppercase tracking-[0.4em]">Ranked Output Preview // Phase 3</h3>
                         </div>
-                        <div class="overflow-x-auto h-[600px] overflow-y-auto custom-scrollbar">
+                        <div class="overflow-x-auto h-[500px] overflow-y-auto custom-scrollbar">
                             <table class="w-full text-left font-mono text-[11px]">
                                 <thead class="bg-black/50 text-cyan-400 border-b border-cyan-900/50 sticky top-0 z-20">
                                     <tr>
                                         <th class="px-8 py-4 uppercase font-bold tracking-widest">Customer ID</th>
-                                        <th class="px-8 py-4 uppercase font-bold tracking-widest text-right">Probability [0,1]</th>
-                                        <th class="px-8 py-4 uppercase font-bold tracking-widest text-center">Status</th>
+                                        <th class="px-8 py-4 uppercase font-bold tracking-widest text-right">Probability Score</th>
+                                        <th class="px-8 py-4 uppercase font-bold tracking-widest text-center">Purchase Possibility</th>
                                     </tr>
                                 </thead>
                                 <tbody id="data-table-body" class="divide-y divide-cyan-900/10"></tbody>
@@ -472,79 +667,213 @@
                 </div>
             </div>
         </div>
+
+        <!-- View: Experience -->
+        <div id="view-experience" class="view-section">
+            <h2 class="font-display text-4xl font-bold text-white uppercase tracking-tight mb-8">Our Zerve.ai Experience</h2>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <!-- About Zerve.ai -->
+                <div class="hud-card p-8">
+                    <h3 class="text-cyan-400 font-display text-sm uppercase tracking-widest mb-6 flex items-center gap-3">
+                        <i data-lucide="info" class="w-5 h-5"></i> About Zerve.ai
+                    </h3>
+                    <p class="text-xs font-mono text-slate-400 leading-relaxed uppercase">
+                        Zerve.ai is a powerful and well-structured platform designed to simulate real-world data science and machine learning workflows. It provides an industry-aligned environment where participants can focus on building accurate, scalable, and reliable ML solutions.
+                    </p>
+                </div>
+
+                <!-- Overall Impact -->
+                <div class="hud-card p-8 border-green-500/30 bg-green-950/5">
+                    <h3 class="text-green-500 font-display text-sm uppercase tracking-widest mb-6 flex items-center gap-3">
+                        <i data-lucide="zap" class="w-5 h-5"></i> Overall Impact
+                    </h3>
+                    <p class="text-xs font-mono text-slate-400 leading-relaxed uppercase">
+                        Zerve.ai transformed our approach to machine learning by emphasizing correctness, robustness, and real-world applicability. The platform played a crucial role in strengthening our technical foundation and professional problem-solving mindset.
+                    </p>
+                </div>
+
+                <!-- Key Learnings -->
+                <div class="hud-card p-8 lg:col-span-2">
+                    <h3 class="text-cyan-400 font-display text-sm uppercase tracking-widest mb-6 flex items-center gap-3">
+                        <i data-lucide="graduation-cap" class="w-5 h-5"></i> Key Learnings
+                    </h3>
+                    <p class="text-[10px] font-mono text-slate-500 uppercase mb-4">Working on Zerve.ai helped us gain practical experience in:</p>
+                    <ul class="grid grid-cols-1 md:grid-cols-2 gap-4 text-[11px] font-mono text-slate-300 uppercase">
+                        <li class="flex items-start gap-3 border-l border-cyan-900 pl-4 py-1">
+                            <span class="text-cyan-400 mt-0.5">•</span> Designing complete end-to-end machine learning pipelines
+                        </li>
+                        <li class="flex items-start gap-3 border-l border-cyan-900 pl-4 py-1">
+                            <span class="text-cyan-400 mt-0.5">•</span> Applying proper data preprocessing and feature handling techniques
+                        </li>
+                        <li class="flex items-start gap-3 border-l border-cyan-900 pl-4 py-1">
+                            <span class="text-cyan-400 mt-0.5">•</span> Using competition-grade evaluation metrics such as Normalized Gini
+                        </li>
+                        <li class="flex items-start gap-3 border-l border-cyan-900 pl-4 py-1">
+                            <span class="text-cyan-400 mt-0.5">•</span> Building models that generalize effectively to unseen data
+                        </li>
+                        <li class="flex items-start gap-3 border-l border-cyan-900 pl-4 py-1 md:col-span-2">
+                            <span class="text-cyan-400 mt-0.5">•</span> Producing probability-based outputs aligned with real-world business use cases
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Challenges -->
+                <div class="hud-card p-8">
+                    <h3 class="text-red-400 font-display text-sm uppercase tracking-widest mb-6 flex items-center gap-3">
+                        <i data-lucide="alert-triangle" class="w-5 h-5"></i> Challenges Encountered
+                    </h3>
+                    <ul class="space-y-4 text-[11px] font-mono text-slate-300 uppercase">
+                        <li class="flex gap-3"><i data-lucide="chevron-right" class="w-4 h-4 text-red-900 shrink-0"></i> Working within an isolated execution environment</li>
+                        <li class="flex gap-3"><i data-lucide="chevron-right" class="w-4 h-4 text-red-900 shrink-0"></i> Managing limited external library access</li>
+                        <li class="flex gap-3"><i data-lucide="chevron-right" class="w-4 h-4 text-red-900 shrink-0"></i> Adhering to strict execution and file-handling constraints</li>
+                        <li class="flex gap-3"><i data-lucide="chevron-right" class="w-4 h-4 text-red-900 shrink-0"></i> Ensuring consistent and reproducible results</li>
+                    </ul>
+                </div>
+
+                <!-- Approach -->
+                <div class="hud-card p-8">
+                    <h3 class="text-green-400 font-display text-sm uppercase tracking-widest mb-6 flex items-center gap-3">
+                        <i data-lucide="target" class="w-5 h-5"></i> Our Approach to Solving Them
+                    </h3>
+                    <ul class="space-y-4 text-[11px] font-mono text-slate-300 uppercase">
+                        <li class="flex gap-3"><i data-lucide="check" class="w-4 h-4 text-green-900 shrink-0"></i> Writing clean, modular, and self-contained code</li>
+                        <li class="flex gap-3"><i data-lucide="check" class="w-4 h-4 text-green-900 shrink-0"></i> Validating each stage of the pipeline step-by-step</li>
+                        <li class="flex gap-3"><i data-lucide="check" class="w-4 h-4 text-green-900 shrink-0"></i> Avoiding shortcuts and focusing on strong fundamentals</li>
+                        <li class="flex gap-3"><i data-lucide="check" class="w-4 h-4 text-green-900 shrink-0"></i> Designing robust pipelines that remain stable across environments</li>
+                    </ul>
+                </div>
+
+                <!-- Value -->
+                <div class="hud-card p-8 lg:col-span-2 border-amber-500/20">
+                    <h3 class="text-amber-500 font-display text-sm uppercase tracking-widest mb-6 flex items-center gap-3">
+                        <i data-lucide="shield" class="w-5 h-5"></i> Why These Constraints Were Valuable
+                    </h3>
+                    <p class="text-[10px] font-mono text-slate-500 uppercase mb-4">These limitations encouraged best practices by:</p>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 text-[11px] font-mono text-slate-300 uppercase">
+                        <div class="space-y-4">
+                            <div class="bg-black/40 p-4 border border-amber-900/30 rounded">
+                                <span class="text-amber-500 block mb-1">Code Clarity</span>
+                                IMPROVING CODE CLARITY AND MAINTAINABILITY
+                            </div>
+                            <div class="bg-black/40 p-4 border border-amber-900/30 rounded">
+                                <span class="text-amber-500 block mb-1">Env Management</span>
+                                ENHANCING UNDERSTANDING OF ENVIRONMENT MANAGEMENT
+                            </div>
+                        </div>
+                        <div class="space-y-4">
+                            <div class="bg-black/40 p-4 border border-amber-900/30 rounded">
+                                <span class="text-amber-500 block mb-1">Systematic Debugging</span>
+                                PROMOTING SYSTEMATIC DEBUGGING AND VALIDATION
+                            </div>
+                            <div class="bg-black/40 p-4 border border-amber-900/30 rounded">
+                                <span class="text-amber-500 block mb-1">Production Readiness</span>
+                                PREPARING US FOR PRODUCTION-LEVEL ML DEVELOPMENT
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </main>
 
     <script>
         const MODELS = [
-            { name: "HistGradientBoosting", gini: 0.2725, acc: 0.9636, color: "#00f2ff", active: true },
-            { name: "Logistic Regression", gini: 0.2370, acc: 0.6259, color: "#7000ff" },
-            { name: "Extra Trees", gini: 0.2312, acc: 0.7404, color: "#ec4899" },
-            { name: "Random Forest", gini: 0.2213, acc: 0.8620, color: "#f59e0b" },
-            { name: "SGD Classifier", gini: 0.2097, acc: 0.5915, color: "#39ff14" },
-            { name: "Decision Tree", gini: 0.1515, acc: 0.5877, color: "#64748b" },
-            { name: "MLP Classifier", gini: 0.1474, acc: 0.9627, color: "#ef4444" }
+            { name: "CatBoost (Phase 3)", gini: 0.2815, acc: 0.9640, color: "#00f2ff", active: true },
+            { name: "HistGB (Phase 2)", gini: 0.2749, acc: 0.9636, color: "#7000ff" },
+            { name: "LightGBM (Phase 2)", gini: 0.2663, acc: 0.9610, color: "#39ff14" },
+            { name: "XGBoost (Phase 2)", gini: 0.2558, acc: 0.9580, color: "#f59e0b" },
+            { name: "Logistic Regression", gini: 0.2370, acc: 0.6259, color: "#64748b" }
         ].sort((a,b) => b.gini - a.gini);
 
-        const PREDICTIONS = Array.from({ length: 20 }, (_, i) => ({
-            id: `Cust_${Math.floor(Math.random() * 900000) + 100000}`,
-            target: Math.random() * 0.15
-        }));
-
-        lucide.createIcons();
+        const historyCharts = { phase1: null, phase2: null };
 
         function switchTab(tabId) {
             document.querySelectorAll('.nav-btn').forEach(btn => {
                 btn.classList.remove('active');
                 if(btn.id === `btn-${tabId}`) btn.classList.add('active');
             });
-
             document.querySelectorAll('.view-section').forEach(view => view.classList.remove('active-view'));
             const target = document.getElementById(`view-${tabId}`);
-            target.classList.add('active-view');
+            if (target) target.classList.add('active-view');
             
             if(tabId === 'analysis') renderChart();
+            if(tabId === 'history') renderHistoryCharts();
             lucide.createIcons();
         }
 
-        const tbody = document.getElementById('data-table-body');
-        PREDICTIONS.forEach(row => {
-            const tr = document.createElement('tr');
-            tr.className = "hover:bg-cyan-400/5 transition-colors group";
-            tr.innerHTML = `
-                <td class="px-8 py-4 text-white font-mono opacity-80">${row.id}</td>
-                <td class="px-8 py-4 text-cyan-400 text-right font-bold font-mono">${row.target.toFixed(6)}</td>
-                <td class="px-8 py-4 text-center">
-                    <span class="text-[8px] px-2 py-0.5 border border-cyan-900/50 bg-cyan-950/20 text-cyan-500 uppercase">Processed</span>
-                </td>
-            `;
-            tbody.appendChild(tr);
-        });
-
-        const rankingList = document.getElementById('ranking-list');
-        MODELS.forEach((m, i) => {
-            const div = document.createElement('div');
-            div.className = "group cursor-default";
-            div.innerHTML = `
-                <div class="flex justify-between items-center mb-1">
-                    <span class="text-[9px] font-mono ${m.active ? 'text-cyan-400' : 'text-slate-500'} uppercase tracking-tighter">0${i+1} ${m.name}</span>
-                    <span class="text-[9px] font-mono text-white">${m.gini.toFixed(4)}</span>
-                </div>
-                <div class="w-full h-1 bg-slate-900/50 rounded-full overflow-hidden border border-slate-800">
-                    <div class="h-full rounded-full transition-all duration-1000 shadow-[0_0_8px_currentColor]" 
-                         style="width: ${m.gini * 300}%; background-color: ${m.color}; color: ${m.color}"></div>
-                </div>
-            `;
-            rankingList.appendChild(div);
-        });
-
-        let chartInstance = null;
-        function renderChart() {
-            if(chartInstance) return;
-            const ctx = document.getElementById('performanceChart').getContext('2d');
+        function renderHistoryCharts() {
             Chart.defaults.font.family = '"JetBrains Mono", monospace';
             Chart.defaults.color = '#506070';
-            
-            chartInstance = new Chart(ctx, {
+            if (historyCharts.phase1) return;
+
+            const ctx1 = document.getElementById('historyChartPhase1').getContext('2d');
+            historyCharts.phase1 = new Chart(ctx1, {
+                type: 'bar',
+                data: {
+                    labels: ['LogReg', 'SGD', 'DT', 'RF', 'ET', 'HistGB'],
+                    datasets: [
+                        { label: 'Gini', data: [0.2370, 0.2074, 0.1515, 0.2213, 0.2312, 0.2725], backgroundColor: '#00f2ffaa', borderColor: '#00f2ff', borderWidth: 1, yAxisID: 'y' },
+                        { label: 'Accuracy', data: [0.6259, 0.5429, 0.5877, 0.8620, 0.7404, 0.9636], backgroundColor: '#39ff1444', borderColor: '#39ff14', borderWidth: 1, yAxisID: 'y1' }
+                    ]
+                },
+                options: { 
+                    responsive: true, maintainAspectRatio: false,
+                    plugins: { title: { display: true, text: 'Phase 1 Benchmarks', color: '#fff' }, legend: { position: 'bottom' } },
+                    scales: { y: { position: 'left', min: 0, max: 0.3 }, y1: { position: 'right', min: 0, max: 1, grid: { display: false } } }
+                }
+            });
+
+            const ctx2 = document.getElementById('historyChartPhase2').getContext('2d');
+            historyCharts.phase2 = new Chart(ctx2, {
+                type: 'bar',
+                data: {
+                    labels: ['CatBoost', 'XGBoost', 'HistGB', 'LightGBM'],
+                    datasets: [{ 
+                        label: 'Gini Result', 
+                        data: [0.2815, 0.2558, 0.2749, 0.2663],
+                        backgroundColor: ['#00f2ffaa', '#f59e0baa', '#39ff14aa', '#7000ffaa'],
+                    }]
+                },
+                options: { 
+                    responsive: true, maintainAspectRatio: false,
+                    plugins: { title: { display: true, text: 'Phase 2 Convergence', color: '#fff' }, legend: { display: false } },
+                    scales: { y: { min: 0, max: 0.35 } }
+                }
+            });
+        }
+
+        const tbody = document.getElementById('data-table-body');
+        if (tbody) {
+            const artifactData = [
+                { id: 'Cust_344238', target: 0.3234822, label: 'High', color: 'text-green-400 border-green-900/50 bg-green-950/20' },
+                { id: 'Cust_49418', target: 0.193149, label: 'Moderate', color: 'text-amber-400 border-amber-900/50 bg-amber-950/20' },
+                { id: 'Cust_433885', target: 0.1874551, label: 'Moderate', color: 'text-amber-400 border-amber-900/50 bg-amber-950/20' },
+                { id: 'Cust_281862', target: 0.1699873, label: 'Low', color: 'text-red-400 border-red-900/50 bg-red-950/20' }
+            ];
+            artifactData.forEach(row => {
+                const tr = document.createElement('tr');
+                tr.className = "hover:bg-cyan-400/5 transition-colors group";
+                tr.innerHTML = `<td class="px-8 py-4 text-white font-mono opacity-80">${row.id}</td><td class="px-8 py-4 text-cyan-400 text-right font-bold font-mono">${row.target.toFixed(7)}</td><td class="px-8 py-4 text-center"><span class="text-[8px] px-2 py-0.5 border ${row.color} uppercase tracking-widest font-bold">${row.label}</span></td>`;
+                tbody.appendChild(tr);
+            });
+        }
+
+        const rankingList = document.getElementById('ranking-list');
+        if (rankingList) {
+            MODELS.forEach((m, i) => {
+                const div = document.createElement('div');
+                div.innerHTML = `<div class="flex justify-between items-center mb-1"><span class="text-[9px] font-mono ${m.active ? 'text-cyan-400' : 'text-slate-500'} uppercase">0${i+1} ${m.name}</span><span class="text-[9px] font-mono text-white">${m.gini.toFixed(4)}</span></div><div class="w-full h-1 bg-slate-900/50 border border-slate-800"><div class="h-full" style="width: ${m.gini * 300}%; background-color: ${m.color}"></div></div>`;
+                rankingList.appendChild(div);
+            });
+        }
+
+        let mainChartInstance = null;
+        function renderChart() {
+            if(mainChartInstance) return;
+            const canvas = document.getElementById('performanceChart');
+            if (!canvas) return;
+            mainChartInstance = new Chart(canvas.getContext('2d'), {
                 type: 'bar',
                 data: {
                     labels: MODELS.map(m => m.name),
@@ -554,81 +883,50 @@
                         backgroundColor: MODELS.map(m => m.color + '44'),
                         borderColor: MODELS.map(m => m.color),
                         borderWidth: 1,
-                        borderRadius: 0,
-                        barThickness: 30,
                     }]
                 },
                 options: {
                     indexAxis: 'y',
                     responsive: true,
                     maintainAspectRatio: false,
-                    plugins: { 
-                        legend: { display: false },
-                        tooltip: {
-                            backgroundColor: 'rgba(0, 5, 10, 0.95)',
-                            titleFont: { size: 12, family: 'Orbitron' },
-                            bodyFont: { size: 10, family: 'JetBrains Mono' },
-                            borderColor: '#00f2ff33',
-                            borderWidth: 1,
-                            padding: 15,
-                            cornerRadius: 0,
-                            displayColors: false,
-                        }
-                    },
+                    plugins: { legend: { display: false } },
                     scales: {
-                        x: { 
-                            beginAtZero: true, 
-                            max: 0.35,
-                            grid: { color: 'rgba(0, 242, 255, 0.05)' },
-                            ticks: { font: { size: 9 } }
-                        },
-                        y: { 
-                            grid: { display: false },
-                            ticks: { font: { size: 9 }, color: '#fff' }
-                        }
+                        x: { beginAtZero: true, max: 0.35, grid: { color: 'rgba(0,242,255,0.05)' } },
+                        y: { grid: { display: false }, ticks: { color: '#fff' } }
                     }
                 }
             });
         }
 
-        // Action Simulation with actual Redirect
         function handleDownload() {
             const btn = document.getElementById('download-btn');
-            const originalContent = btn.innerHTML;
-            const driveLink = "https://drive.google.com/file/d/124GNtxgLORlRP7NG_8mhjkmAB8gpwJsm/view?usp=sharing";
-            
+            const driveLink = "https://drive.google.com/file/d/1ZPxV6zG7CFqqe4ddAAIwCXWzAniIIKLX/view?usp=sharing";
             btn.disabled = true;
-            btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> Preparing...`;
+            btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> PREPARING...`;
             lucide.createIcons();
-            
             setTimeout(() => {
-                btn.innerHTML = `<i data-lucide="check" class="w-4 h-4"></i> Opening Link...`;
+                window.open(driveLink, '_blank');
+                btn.innerHTML = `<i data-lucide="check" class="w-4 h-4"></i> REDIRECTING...`;
                 btn.classList.add('bg-green-500', 'border-green-500', 'text-black');
                 lucide.createIcons();
-                
-                // Open the Google Drive link
-                window.open(driveLink, '_blank');
-                
-                setTimeout(() => {
-                    btn.innerHTML = originalContent;
-                    btn.classList.remove('bg-green-500', 'border-green-500', 'text-black');
-                    btn.disabled = false;
-                    lucide.createIcons();
+                setTimeout(() => { 
+                    btn.disabled = false; 
+                    btn.innerHTML = 'Get Model Output'; 
+                    btn.classList.remove('bg-green-500', 'border-green-500', 'text-black'); 
+                    lucide.createIcons(); 
                 }, 3000);
             }, 1200);
         }
 
-        // Animated Number Counter Simulation
-        const targetGini = 0.2725;
+        lucide.createIcons();
+        const targetGini = 0.2815;
         let currentGini = 0;
         const giniEl = document.getElementById('gini-score');
         const interval = setInterval(() => {
+            if (!giniEl) return clearInterval(interval);
             currentGini += 0.0123;
-            if(currentGini >= targetGini) {
-                currentGini = targetGini;
-                clearInterval(interval);
-            }
-            if(giniEl) giniEl.innerText = currentGini.toFixed(4);
+            if(currentGini >= targetGini) { currentGini = targetGini; clearInterval(interval); }
+            giniEl.innerText = currentGini.toFixed(4);
         }, 40);
     </script>
 </body>
